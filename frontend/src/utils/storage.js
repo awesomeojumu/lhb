@@ -1,18 +1,11 @@
-// ✅ Save token to localStorage
-export const saveToken = (token) => {
-  if (token) {
-    localStorage.setItem("token", token);
-  } else {
-    localStorage.removeItem("token"); // clear if empty
-  }
-};
+// src/utils/storage.js
 
-// ✅ Get token from localStorage
-export const getToken = () => {
-  return localStorage.getItem("token");
-};
+// Generic helpers (optional)
+export const setItem = (key, value) => localStorage.setItem(key, value);
+export const getItem = (key) => localStorage.getItem(key);
+export const removeItem = (key) => localStorage.removeItem(key);
 
-// ✅ Remove token explicitly (optional)
-export const removeToken = () => {
-  localStorage.removeItem("token");
-};
+// ✅ Token-specific helpers
+export const setToken = (token) => localStorage.setItem("token", token);
+export const getToken = () => localStorage.getItem("token");
+export const removeToken = () => localStorage.removeItem("token");
