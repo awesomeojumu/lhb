@@ -8,49 +8,48 @@ import {
   Toolbar,
   Divider,
 } from "@mui/material";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import PeopleIcon from "@mui/icons-material/People";
-import TaskIcon from "@mui/icons-material/Task";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { useNavigate } from "react-router-dom";
-import routes from "@/config/routesConfig";
+import sidebarConfig from "@/config/sidebarConfig";
+import { useAuth } from "@/context/AuthContext";
 
-const drawerWidth = 240;
+const drawerWidth = 350;
 
 const Sidebar = ({ mobileOpen, onMenuToggle }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const links = [
-    { label: "Dashboard", icon: <DashboardIcon />, path: routes.dashboard },
-    { label: "Users", icon: <PeopleIcon />, path: routes.users },
-    { label: "KPIs", icon: <TaskIcon />, path: routes.kpis },
-    { label: "Settings", icon: <SettingsIcon />, path: "/dashboard/settings" },
-  ];
+  const role = (user?.role || "globalSoldier").toLowerCase();
+  const links = sidebarConfig[role] || [];
 
   const drawerContent = (
     <>
       <Toolbar />
       <Divider />
       <List>
-        {links.map((link) => (
-          <ListItemButton
-            key={link.path}
-            onClick={() => {
-              navigate(link.path);
-              onMenuToggle?.(); // close mobile drawer
-            }}
-          >
-            <ListItemIcon>{link.icon}</ListItemIcon>
-            <ListItemText primary={link.label} />
-          </ListItemButton>
-        ))}
+        {links.map((link, index) =>
+          link.divider ? (
+            <Divider key={`divider-${index}`} sx={{ my: 1 }} />
+          ) : (
+            <ListItemButton
+              key={link.path || `item-${index}`}
+              onClick={() => {
+                navigate(link.path);
+                onMenuToggle?.();
+              }}
+            >
+              <ListItemIcon>
+                <link.icon /> {/* ✅ FIXED */}
+              </ListItemIcon>
+              <ListItemText primary={link.label} />
+            </ListItemButton>
+          )
+        )}
       </List>
     </>
   );
 
   return (
     <>
-      {/* Mobile Drawer */}
       <Drawer
         variant="temporary"
         open={mobileOpen}
@@ -64,7 +63,6 @@ const Sidebar = ({ mobileOpen, onMenuToggle }) => {
         {drawerContent}
       </Drawer>
 
-      {/* Desktop Drawer */}
       <Drawer
         variant="permanent"
         sx={{

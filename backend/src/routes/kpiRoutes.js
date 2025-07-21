@@ -13,44 +13,36 @@ const {
   getUserKPIs,
   updateKPIStatus,
   getAllKPIs,
+  getKPIDetails,
   updateKPI,
   deleteKPI,
+  getMyKPIs,
   getKPISummary,
 } = require('../controllers/kpiController');
 
-// Assign KPI (Commander/Commando only)
-router.post(
-  '/',
-  protect,
-  authorizeRoles('commander', 'commando'),
-  createKPIValidation,
-  validate,
-  assignKPI
-);
+// ✅ Create / Assign KPI
+router.post('/', protect, authorizeRoles('commander', 'commando'), createKPIValidation, validate, assignKPI);
 
-// Get KPIs for a user (Self or Admin)
-router.get('/user/:userId', protect, getUserKPIs);
-
-// Update KPI progress/status (Self)
-router.put('/status/:kpiStatusId', protect, updateKPIStatusValidation, validate, updateKPIStatus);
-
-// Get all KPIs (Commander/Commando)
-router.get('/', protect, authorizeRoles('commander', 'commando'), getAllKPIs);
-
-// Update KPI (Commander can edit all, Commando can edit their own)
-router.put('/:kpiId', protect, authorizeRoles('commander', 'commando'), updateKPI);
-
-// ✅ Delete KPI (Commander can delete all, Commando only their own)
-router.delete('/:kpiId', protect, authorizeRoles('commander', 'commando'), deleteKPI);
-
-// Get My KPIs (Self)
-const { getMyKPIs } = require('../controllers/kpiController');
-
-// Get KPIs summary (Commander/Commando)
-router.get('/summary', protect, authorizeRoles('commander', 'commando'), getKPISummary);
-
-// 
+// ✅ My KPIs & Summary (Self)
+router.get('/my', protect, getMyKPIs);
 router.get('/summary', protect, getKPISummary);
 
-router.get('/my', protect, getMyKPIs);
+// ✅ All KPIs (Commander/Commando)
+router.get('/', protect, authorizeRoles('commander', 'commando'), getAllKPIs);
+
+// ✅ KPIs for specific user
+router.get('/user/:userId', protect, getUserKPIs);
+
+// ✅ Single KPI details (must come last to avoid overriding /summary)
+router.get('/:kpiId', protect, getKPIDetails);
+
+// ✅ Update KPI progress/status (Self)
+router.put('/status/:kpiStatusId', protect, updateKPIStatusValidation, validate, updateKPIStatus);
+
+// ✅ Update KPI (Commander/Commando)
+router.put('/:kpiId', protect, authorizeRoles('commander', 'commando'), updateKPI);
+
+// ✅ Delete KPI (Commander/Commando)
+router.delete('/:kpiId', protect, authorizeRoles('commander', 'commando'), deleteKPI);
+
 module.exports = router;

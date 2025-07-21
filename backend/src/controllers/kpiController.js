@@ -77,7 +77,7 @@ exports.assignKPI = async (req, res) => {
 };
 
 // =======================
-// Get All KPIs (Commander/Commando)
+// Get All KPIs
 // =======================
 exports.getAllKPIs = async (req, res) => {
   try {
@@ -89,7 +89,21 @@ exports.getAllKPIs = async (req, res) => {
 };
 
 // =======================
-// Update KPI (Commander can edit all, Commando can only edit their own)
+// Get Single KPI by ID
+// =======================
+exports.getKPIDetails = async (req, res) => {
+  try {
+    const kpi = await KPI.findById(req.params.kpiId)
+      .populate('createdBy', 'firstName lastName role');
+    if (!kpi) return res.status(404).json({ message: 'KPI not found' });
+    res.json(kpi);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// =======================
+// Update KPI
 // =======================
 exports.updateKPI = async (req, res) => {
   try {
@@ -99,8 +113,7 @@ exports.updateKPI = async (req, res) => {
     const kpi = await KPI.findById(kpiId);
     if (!kpi) return res.status(404).json({ message: 'KPI not found' });
 
-    // ✅ Commander can edit all KPIs
-    if (req.user.role === 'commander') {
+    if (req.user.role === 'commander' || (req.user.role === 'commando' && String(kpi.createdBy) === String(req.user._id))) {
       kpi.title = title || kpi.title;
       kpi.description = description || kpi.description;
       kpi.target = target || kpi.target;
@@ -109,20 +122,28 @@ exports.updateKPI = async (req, res) => {
       return res.json({ message: 'KPI updated successfully', kpi: updated });
     }
 
-    // ✅ Commando can only edit their own KPIs
-    if (req.user.role === 'commando') {
-      if (String(kpi.createdBy) !== String(req.user._id)) {
-        return res.status(403).json({ message: 'You cannot edit a KPI created by the Commander' });
-      }
-      kpi.title = title || kpi.title;
-      kpi.description = description || kpi.description;
-      kpi.target = target || kpi.target;
-      kpi.deadline = deadline || kpi.deadline;
-      const updated = await kpi.save();
-      return res.json({ message: 'KPI updated successfully', kpi: updated });
+    res.status(403).json({ message: 'You cannot edit this KPI' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// =======================
+// Delete KPI
+// =======================
+exports.deleteKPI = async (req, res) => {
+  try {
+    const { kpiId } = req.params;
+    const kpi = await KPI.findById(kpiId);
+    if (!kpi) return res.status(404).json({ message: 'KPI not found' });
+
+    if (req.user.role === 'commander' || (req.user.role === 'commando' && String(kpi.createdBy) === String(req.user._id))) {
+      await KPIStatus.deleteMany({ kpi: kpiId });
+      await kpi.deleteOne();
+      return res.json({ message: 'KPI deleted successfully' });
     }
 
-    res.status(403).json({ message: 'Only Commander or Commando can update KPIs' });
+    res.status(403).json({ message: 'You cannot delete this KPI' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -136,11 +157,7 @@ exports.getUserKPIs = async (req, res) => {
     const kpis = await KPIStatus.find({ user: req.params.userId })
       .populate('kpi', 'title description target deadline')
       .populate('user', 'firstName lastName email');
-
-    if (!kpis || kpis.length === 0) {
-      return res.status(404).json({ message: 'No KPIs found for this user' });
-    }
-
+    if (!kpis || kpis.length === 0) return res.status(404).json({ message: 'No KPIs found' });
     res.json(kpis);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -148,40 +165,7 @@ exports.getUserKPIs = async (req, res) => {
 };
 
 // =======================
-// Delete KPI (Commander can delete all, Commando only their own)
-// =======================
-exports.deleteKPI = async (req, res) => {
-  try {
-    const { kpiId } = req.params;
-
-    const kpi = await KPI.findById(kpiId);
-    if (!kpi) return res.status(404).json({ message: 'KPI not found' });
-
-    if (req.user.role === 'commander') {
-      await KPIStatus.deleteMany({ kpi: kpiId });
-      await kpi.deleteOne();
-      return res.json({ message: 'KPI deleted successfully' });
-    }
-
-    if (req.user.role === 'commando') {
-      if (String(kpi.createdBy) !== String(req.user._id)) {
-        return res
-          .status(403)
-          .json({ message: 'You cannot delete a KPI created by the Commander' });
-      }
-      await KPIStatus.deleteMany({ kpi: kpiId });
-      await kpi.deleteOne();
-      return res.json({ message: 'KPI deleted successfully' });
-    }
-
-    res.status(403).json({ message: 'Only Commander or Commando can delete KPIs' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// =======================
-// Update KPI Progress/Status (Self)  
+// Update KPI Status
 // =======================
 exports.updateKPIStatus = async (req, res) => {
   try {
@@ -189,11 +173,8 @@ exports.updateKPIStatus = async (req, res) => {
     const { progress, status } = req.body;
 
     const kpiStatus = await KPIStatus.findByIdAndUpdate(
-      kpiStatusId,
-      { progress, status },
-      { new: true }
+      kpiStatusId, { progress, status }, { new: true }
     );
-
     if (!kpiStatus) return res.status(404).json({ message: 'KPI Status not found' });
 
     res.json({ message: 'KPI status updated successfully', kpiStatus });
@@ -201,7 +182,6 @@ exports.updateKPIStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // =======================
 // Get My KPIs
@@ -211,11 +191,7 @@ exports.getMyKPIs = async (req, res) => {
     const kpis = await KPIStatus.find({ user: req.user._id })
       .populate('kpi', 'title description target deadline')
       .populate('user', 'firstName lastName email');
-
-    if (!kpis || kpis.length === 0) {
-      return res.status(404).json({ message: 'No KPIs found for you' });
-    }
-
+    if (!kpis || kpis.length === 0) return res.status(404).json({ message: 'No KPIs found' });
     res.json(kpis);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -223,14 +199,13 @@ exports.getMyKPIs = async (req, res) => {
 };
 
 // =======================
-// Get KPI Summary for User
+// Get KPI Summary
 // =======================
 exports.getKPISummary = async (req, res) => {
   try {
     const summaries = await KPIStatus.find({ user: req.user._id })
       .populate('kpi', 'title target deadline')
       .select('progress status');
-
     if (!summaries || summaries.length === 0) {
       return res.status(404).json({ message: 'No KPI summaries found' });
     }

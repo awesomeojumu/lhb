@@ -13,20 +13,22 @@ const DashboardLayout = () => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      {/* Navbar */}
+      {/* ✅ Navbar */}
       <Navbar onMenuToggle={handleMenuToggle} />
 
-      {/* Sidebar */}
+      {/* ✅ Sidebar */}
       <Sidebar mobileOpen={mobileOpen} onMenuToggle={handleMenuToggle} />
 
-      {/* Main Content */}
+      {/* ✅ Main Content */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: 4,
           mt: 8,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          pr:10, // ✅ Avoid content stretching behind sidebar
+          width: { sm: `calc(100% - ${drawerWidth}px)` }, // ✅ avoid stretching behind sidebar
+          ml: { sm: `${drawerWidth}px` }, // ✅ push content right of sidebar on desktop
         }}
       >
         <Toolbar />

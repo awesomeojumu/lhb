@@ -4,11 +4,11 @@ import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 const lightPalette = {
   mode: "light",
   primary: {
-    main: "#1976d2", // Blue
+    main: "#c2741bff", // Blue
     contrastText: "#fff",
   },
   secondary: {
-    main: "#9c27b0", // Purple
+    main: "#30662bff", // Purple
     contrastText: "#fff",
   },
   background: {
@@ -16,7 +16,7 @@ const lightPalette = {
     paper: "#ffffff",
   },
   text: {
-    primary: "#212121",
+    primary: "#000000ff",
     secondary: "#757575",
   },
 };
@@ -24,16 +24,16 @@ const lightPalette = {
 const darkPalette = {
   mode: "dark",
   primary: {
-    main: "#90caf9", // Light blue for dark mode
+    main: "#000000ff", // Light blue for dark mode
     contrastText: "#000",
   },
   secondary: {
-    main: "#ce93d8", // Light purple
+    main: "#758108ff", // Light purple
     contrastText: "#000",
   },
   background: {
     default: "#121212",
-    paper: "#1e1e1e",
+    paper: "#000000ff",
   },
   text: {
     primary: "#ffffff",

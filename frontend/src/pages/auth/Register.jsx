@@ -1,9 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Box, Typography, Card, CardContent } from "@mui/material";
-import { register as registerService } from "@services/authService";
-import { useToast } from "@context/ToastContext";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Stack
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@context/ToastContext";
+import { register as registerService } from "@services/authService";
 import { registerFields } from "@config/forms";
 import routes from "@config/routesConfig";
 import FormInput from "@components/forms/FormInput";
@@ -27,26 +33,45 @@ const Register = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: "auto", mt: 8 }}>
-      <Card>
+    <Box
+      sx={{
+        height: "100vh", // ✅ full-screen height
+        display: "flex",
+        justifyContent: "center", // ✅ center horizontally
+        alignItems: "center", // ✅ center vertically
+        backgroundColor: "#f9f9f9", // light background for contrast
+        p: 2, // padding for mobile responsiveness
+      }}
+    >
+      <Card sx={{ maxWidth: 400, width: "100%", boxShadow: 3 }}>
         <CardContent>
-          <Typography variant="h5" mb={2} fontWeight="bold">
+          <Typography variant="h5" mb={3} fontWeight="bold">
             Register
           </Typography>
+
           <form onSubmit={handleSubmit(onSubmit)}>
-            {registerFields.map((field) =>
-              field.type === "select" ? (
-                <SelectInput
-                  key={field.name}
-                  {...field}
-                  control={control}
-                  options={battalions}
-                />
-              ) : (
-                <FormInput key={field.name} {...field} control={control} />
-              )
-            )}
-            <FormButtons isSubmitting={false} onCancel={() => navigate(routes.login)} />
+            {/* ✅ Stack automatically spaces fields */}
+            <Stack spacing={2}>
+              {registerFields.map((field) =>
+                field.type === "select" ? (
+                  <SelectInput
+                    key={field.name}
+                    {...field}
+                    control={control}
+                    options={battalions}
+                  />
+                ) : (
+                  <FormInput key={field.name} {...field} control={control} />
+                )
+              )}
+            </Stack>
+
+            {/* ✅ Extra space before buttons */}
+            <FormButtons
+              isSubmitting={false}
+              onCancel={() => navigate(routes.login)}
+              sx={{ mt: 3 }}
+            />
           </form>
         </CardContent>
       </Card>

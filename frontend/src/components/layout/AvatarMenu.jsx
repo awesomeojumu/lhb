@@ -7,6 +7,8 @@ import {
   Divider,
   IconButton,
   Tooltip,
+  Typography,
+  Box,
 } from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
@@ -23,6 +25,12 @@ const AvatarMenu = () => {
 
   const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
+
+  // ✅ Helper to convert to Proper Case
+  const toProperCase = (str = "") =>
+    str
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
 
   return (
     <>
@@ -41,6 +49,33 @@ const AvatarMenu = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
+        {/* ✅ User Info Section */}
+        <Box sx={{ px: 2, py: 1.5 }}>
+          {/* Name - Proper Case */}
+          <Typography variant="subtitle1" fontWeight="bold">
+            {`${toProperCase(user?.firstName || "Unknown")} ${toProperCase(
+              user?.lastName || ""
+            )}`}
+          </Typography>
+
+          {/* Role - Bold + Uppercase */}
+          <Typography
+            variant="body2"
+            fontWeight="bold"
+            sx={{ textTransform: "uppercase" }}
+            color="text.secondary"
+          >
+            {user?.role || "No Role"}
+          </Typography>
+
+          {/* Battalion - Proper Case */}
+          <Typography variant="body2" color="text.secondary">
+            {toProperCase(user?.battalion || "No Battalion")}
+          </Typography>
+        </Box>
+
+        <Divider />
+
         <MenuItem onClick={() => navigate(routes.profile)}>
           <ListItemIcon>
             <PersonIcon fontSize="small" />
@@ -53,6 +88,7 @@ const AvatarMenu = () => {
           </ListItemIcon>
           Settings
         </MenuItem>
+
         <Divider />
         <MenuItem
           onClick={() => {

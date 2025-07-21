@@ -69,10 +69,13 @@ const AppRoutes = () => {
 
           {/* ✅ Settings */}
           <Route path={routes.settings} element={<Settings />} />
+
+          {/* ✅ 404 INSIDE DASHBOARD (MUST BE LAST) */}
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Route>
 
-      {/* ✅ 404 */}
+      {/* ✅ Public 404 (for non-dashboard paths) */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

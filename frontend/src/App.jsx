@@ -15,7 +15,7 @@ function ThemedApp() {
       <BrowserRouter>
         <AuthProvider>
           <ToastProvider>
-            <AppRoutes /> 
+            <AppRoutes /> {/* ✅ Only ONE BrowserRouter now */}
           </ToastProvider>
         </AuthProvider>
       </BrowserRouter>
