@@ -2,80 +2,88 @@ import React from "react";
 import {
   Drawer,
   List,
+  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Toolbar,
   Divider,
+  Toolbar,
+  Box,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext"; // ✅ assuming you get user.role from here
 import sidebarConfig from "@/config/sidebarConfig";
-import { useAuth } from "@/context/AuthContext";
 
-const drawerWidth = 350;
+export const drawerWidth = 240;
 
 const Sidebar = ({ mobileOpen, onMenuToggle }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const role = user?.role?.toLowerCase() || "globalSoldier"; // ✅ fallback role
 
-  const role = (user?.role || "globalSoldier").toLowerCase();
-  const links = sidebarConfig[role] || [];
+  const items = sidebarConfig[role] || sidebarConfig.globalSoldier;
 
-  const drawerContent = (
-    <>
-      <Toolbar />
-      <Divider />
+  const drawer = (
+    <Box>
+      <Toolbar /> {/* ✅ ensures alignment below AppBar */}
       <List>
-        {links.map((link, index) =>
-          link.divider ? (
+        {items.map((item, index) =>
+          item.divider ? (
             <Divider key={`divider-${index}`} sx={{ my: 1 }} />
           ) : (
-            <ListItemButton
-              key={link.path || `item-${index}`}
-              onClick={() => {
-                navigate(link.path);
-                onMenuToggle?.();
-              }}
-            >
-              <ListItemIcon>
-                <link.icon /> {/* ✅ FIXED */}
-              </ListItemIcon>
-              <ListItemText primary={link.label} />
-            </ListItemButton>
+            <ListItem key={item.label} disablePadding>
+              <ListItemButton onClick={() => navigate(item.path)}>
+                <ListItemIcon>
+                  <item.icon />
+                </ListItemIcon>
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            </ListItem>
           )
         )}
       </List>
-    </>
+    </Box>
   );
 
   return (
-    <>
+    <Box
+      component="nav"
+      sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+      aria-label="sidebar navigation"
+    >
+      {/* ✅ Mobile Drawer */}
       <Drawer
         variant="temporary"
         open={mobileOpen}
         onClose={onMenuToggle}
-        ModalProps={{ keepMounted: true }}
+        ModalProps={{ keepMounted: true }} // Better mobile performance
         sx={{
           display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": { width: drawerWidth },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+          },
         }}
       >
-        {drawerContent}
+        {drawer}
       </Drawer>
 
+      {/* ✅ Desktop Drawer */}
       <Drawer
         variant="permanent"
         sx={{
           display: { xs: "none", sm: "block" },
-          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: drawerWidth,
+          },
         }}
         open
       >
-        {drawerContent}
+        {drawer}
       </Drawer>
-    </>
+    </Box>
   );
 };
 
 export default Sidebar;
-export { drawerWidth };

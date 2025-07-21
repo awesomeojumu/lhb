@@ -26,9 +26,6 @@ const DashboardLayout = () => {
           flexGrow: 1,
           p: 4,
           mt: 8,
-          pr:10, // ✅ Avoid content stretching behind sidebar
-          width: { sm: `calc(100% - ${drawerWidth}px)` }, // ✅ avoid stretching behind sidebar
-          ml: { sm: `${drawerWidth}px` }, // ✅ push content right of sidebar on desktop
         }}
       >
         <Toolbar />
