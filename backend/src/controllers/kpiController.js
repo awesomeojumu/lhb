@@ -201,3 +201,50 @@ exports.updateKPIStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+// =======================
+// Get My KPIs
+// =======================
+exports.getMyKPIs = async (req, res) => {
+  try {
+    const kpis = await KPIStatus.find({ user: req.user._id })
+      .populate('kpi', 'title description target deadline')
+      .populate('user', 'firstName lastName email');
+
+    if (!kpis || kpis.length === 0) {
+      return res.status(404).json({ message: 'No KPIs found for you' });
+    }
+
+    res.json(kpis);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// =======================
+// Get KPI Summary for User
+// =======================
+exports.getKPISummary = async (req, res) => {
+  try {
+    const summaries = await KPIStatus.find({ user: req.user._id })
+      .populate('kpi', 'title target deadline')
+      .select('progress status');
+
+    if (!summaries || summaries.length === 0) {
+      return res.status(404).json({ message: 'No KPI summaries found' });
+    }
+
+    const formatted = summaries.map((item) => ({
+      title: item.kpi.title,
+      target: item.kpi.target,
+      progress: item.progress,
+      status: item.status,
+      deadline: item.kpi.deadline,
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

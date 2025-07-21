@@ -27,3 +27,16 @@ exports.sendBulkEmail = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// @desc Get email templates
+exports.getEmailTemplates = async (req, res) => {
+  try {
+    const templates = [
+      { name: 'Welcome', subject: 'Welcome to LHB', body: '<h1>Welcome!</h1>' },
+      { name: 'KPI Assignment', subject: 'New KPI Assigned', body: '<p>You have a new KPI</p>' },
+    ];
+    res.json(templates);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

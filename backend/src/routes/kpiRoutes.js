@@ -15,6 +15,7 @@ const {
   getAllKPIs,
   updateKPI,
   deleteKPI,
+  getKPISummary,
 } = require('../controllers/kpiController');
 
 // Assign KPI (Commander/Commando only)
@@ -42,4 +43,14 @@ router.put('/:kpiId', protect, authorizeRoles('commander', 'commando'), updateKP
 // ✅ Delete KPI (Commander can delete all, Commando only their own)
 router.delete('/:kpiId', protect, authorizeRoles('commander', 'commando'), deleteKPI);
 
+// Get My KPIs (Self)
+const { getMyKPIs } = require('../controllers/kpiController');
+
+// Get KPIs summary (Commander/Commando)
+router.get('/summary', protect, authorizeRoles('commander', 'commando'), getKPISummary);
+
+// 
+router.get('/summary', protect, getKPISummary);
+
+router.get('/my', protect, getMyKPIs);
 module.exports = router;

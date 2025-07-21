@@ -9,11 +9,15 @@ const {
   getUserById,
   updateProfile,
   deleteUser,
+  getUserProfile,
 } = require('../controllers/userController');
 
 router.get('/me', protect, getUserById); // Current user's data (you can modify to getUserProfile)
 router.put('/me', protect, updateProfileValidation, validate, updateProfile);
+router.get('/me', protect, getUserProfile);
 
+router.get('/:id', protect, authorizeRoles('commander', 'commando'), getUserById);
+router.put('/:id', protect, authorizeRoles('commander', 'commando'), updateProfileValidation, validate, updateProfile);
 // Admin/Commander endpoints
 router.get('/', protect, authorizeRoles('commander', 'commando'), getAllUsers);
 router.delete('/:id', protect, authorizeRoles('commander', 'commando'), deleteUser);

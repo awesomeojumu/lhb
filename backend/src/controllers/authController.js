@@ -78,6 +78,17 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+// @desc logout User
+exports.logoutUser = (req, res) => {
+  try {
+    // Invalidate the token by removing it from the client side
+    res.cookie('token', '', { expires: new Date(0) });
+    res.json({ message: 'User logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 // @desc Forgot Password
 exports.forgotPassword = async (req, res) => {
   try {
