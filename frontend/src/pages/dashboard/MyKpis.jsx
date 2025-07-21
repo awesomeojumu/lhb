@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, LinearProgress, Typography } from "@mui/material";
+import { Box, LinearProgress, Typography, Chip } from "@mui/material";
 import Spinner from "@/components/feedback/Spinner";
 import TableToolbar from "@/components/data/TableToolbar";
 import DataTable from "@/components/data/DataTable";
@@ -20,7 +20,7 @@ const MyKpis = () => {
         const data = await getMyKPIs();
         setKpis(data);
       } catch (error) {
-        showToast(error.message, "error");
+        showToast(error.message || "Failed to load KPIs", "error");
       } finally {
         setLoading(false);
       }
@@ -29,9 +29,40 @@ const MyKpis = () => {
 
   if (loading) return <Spinner />;
 
+  if (!kpis.length) {
+    return (
+      <Box sx={{ textAlign: "center", mt: 5 }}>
+        <Typography variant="h6" color="text.secondary">
+          No KPIs assigned yet.
+        </Typography>
+      </Box>
+    );
+  }
+
+  // ✅ Helper: Color-coded status chip
+  const renderStatusChip = (status) => {
+    let color = "default";
+    if (status === "Completed") color = "success";
+    else if (status === "In Progress") color = "warning";
+    else color = "default";
+
+    return <Chip label={status || "Not Started"} color={color} size="small" />;
+  };
+
+  // ✅ Helper: Progress bar colors
+  const getProgressColor = (value) => {
+    if (value >= 80) return "success";
+    if (value >= 40) return "warning";
+    return "error";
+  };
+
   const columns = [
     { field: "title", headerName: "Title" },
-    { field: "status", headerName: "Status" },
+    {
+      field: "status",
+      headerName: "Status",
+      renderCell: (value) => renderStatusChip(value),
+    },
     {
       field: "progress",
       headerName: "Progress",
@@ -40,6 +71,7 @@ const MyKpis = () => {
           <LinearProgress
             variant="determinate"
             value={value || 0}
+            color={getProgressColor(value || 0)}
             sx={{ height: 6, borderRadius: 3, mb: 0.5 }}
           />
           <Typography variant="caption">{value || 0}%</Typography>
@@ -55,7 +87,7 @@ const MyKpis = () => {
   ];
 
   return (
-    <Box sx={{ maxWidth: 900, mx: "auto", my: 4 }}>
+    <Box sx={{ maxWidth: 1200, mx: "auto", my: 4 }}>
       <TableToolbar title="My KPIs" />
       <DataTable
         columns={columns}

@@ -13,7 +13,8 @@ const ResetPassword = lazy(() => import("@pages/auth/ResetPassword"));
 // ✅ Layout & Main Pages
 const DashboardLayout = lazy(() => import("@layout/DashboardLayout"));
 const DashboardHome = lazy(() => import("@pages/dashboard/DashboardHome"));
-const Profile = lazy(() => import("@pages/dashboard/user/Profile.jsx"));
+const Profile = lazy(() => import("@pages/dashboard/user/Profile"));
+const ViewProfile = lazy(() => import("@pages/dashboard/user/ViewProfile"));
 const NotFound = lazy(() => import("@pages/misc/NotFound"));
 const Settings = lazy(() => import("@pages/misc/Settings"));
 
@@ -22,7 +23,7 @@ const UserList = lazy(() => import("@pages/admin/UserList"));
 const UserDetail = lazy(() => import("@pages/admin/UserDetail"));
 const UserManagement = lazy(() => import("@pages/admin/UserManagement"));
 
-// ✅ KPI Pages (Corrected Paths)
+// ✅ KPI Pages
 const KPIList = lazy(() => import("@pages/dashboard/kpi/KPIList"));
 const KPICreate = lazy(() => import("@pages/dashboard/kpi/KPICreate"));
 const KPIEdit = lazy(() => import("@pages/dashboard/kpi/KPIEdit"));
@@ -30,11 +31,17 @@ const KPIDetail = lazy(() => import("@pages/dashboard/kpi/KPIDetail"));
 const KPIManagement = lazy(() => import("@pages/management/KPIManagement"));
 
 // ✅ Management Pages
-const BattalionManagement = lazy(() => import("@pages/management/BattalionManagement"));
-const RoleManagement = lazy(() => import("@pages/management/RoleManagement"));
+const BattalionManagement = lazy(() =>
+  import("@pages/management/BattalionManagement")
+);
+const RoleManagement = lazy(() =>
+  import("@pages/management/RoleManagement")
+);
 
 // ✅ Analytics
-const AnalyticsDashboard = lazy(() => import("@pages/dashboard/AnalyticsDashboard"));
+const AnalyticsDashboard = lazy(() =>
+  import("@pages/dashboard/AnalyticsDashboard")
+);
 
 // ✅ Newly Added Pages
 const Battalion = lazy(() => import("@pages/dashboard/Battalion"));
@@ -59,6 +66,7 @@ const AppRoutes = () => {
           <Route path={routes.dashboard} element={<DashboardLayout />}>
             <Route index element={<DashboardHome />} />
             <Route path={routes.profile} element={<Profile />} />
+            <Route path="/dashboard/profile/view" element={<ViewProfile />} />
             <Route path={routes.settings} element={<Settings />} />
 
             {/* ✅ Basic Pages (All Roles) */}
@@ -69,18 +77,35 @@ const AppRoutes = () => {
             {/* ✅ Users (Commander & Commando Only) */}
             <Route
               path={routes.users}
-              element={<ProtectedRoute allowedRoles={["commander", "commando"]} />}
+              element={
+                <ProtectedRoute allowedRoles={["commander", "commando"]} />
+              }
             >
               <Route index element={<UserList />} />
               <Route path={routes.userDetails()} element={<UserDetail />} />
             </Route>
+
+            {/* ✅ View Specific User Profile */}
+            <Route
+              path="/dashboard/users/:userId"
+              element={
+                <ProtectedRoute allowedRoles={["commander", "commando"]}>
+                  <ViewProfile />
+                </ProtectedRoute>
+              }
+            />
 
             {/* ✅ KPI (All Roles) */}
             <Route
               path={routes.kpis}
               element={
                 <ProtectedRoute
-                  allowedRoles={["commander", "commando", "specialForce", "globalSoldier"]}
+                  allowedRoles={[
+                    "commander",
+                    "commando",
+                    "specialForce",
+                    "globalSoldier",
+                  ]}
                 />
               }
             >
@@ -93,7 +118,9 @@ const AppRoutes = () => {
             {/* ✅ KPI Management (Commander & Commando) */}
             <Route
               path={routes.kpiManagement}
-              element={<ProtectedRoute allowedRoles={["commander", "commando"]} />}
+              element={
+                <ProtectedRoute allowedRoles={["commander", "commando"]} />
+              }
             >
               <Route index element={<KPIManagement />} />
             </Route>
@@ -101,7 +128,9 @@ const AppRoutes = () => {
             {/* ✅ Battalion Management (Commander & Commando) */}
             <Route
               path={routes.battalionManagement}
-              element={<ProtectedRoute allowedRoles={["commander", "commando"]} />}
+              element={
+                <ProtectedRoute allowedRoles={["commander", "commando"]} />
+              }
             >
               <Route index element={<BattalionManagement />} />
             </Route>
@@ -109,7 +138,9 @@ const AppRoutes = () => {
             {/* ✅ Role Management (Commander & Commando) */}
             <Route
               path={routes.roleManagement}
-              element={<ProtectedRoute allowedRoles={["commander", "commando"]} />}
+              element={
+                <ProtectedRoute allowedRoles={["commander", "commando"]} />
+              }
             >
               <Route index element={<RoleManagement />} />
             </Route>
@@ -125,7 +156,9 @@ const AppRoutes = () => {
             {/* ✅ Analytics Dashboard (Commander & Commando) */}
             <Route
               path={routes.analytics}
-              element={<ProtectedRoute allowedRoles={["commander", "commando"]} />}
+              element={
+                <ProtectedRoute allowedRoles={["commander", "commando"]} />
+              }
             >
               <Route index element={<AnalyticsDashboard />} />
             </Route>

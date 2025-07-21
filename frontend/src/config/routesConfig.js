@@ -10,12 +10,16 @@ const routes = {
 
   // ✅ User Profile & Settings
   profile: "/dashboard/profile",
+  viewProfile: "/dashboard/viewProfile",
   settings: "/dashboard/settings",
 
   // ✅ Users (Commander & Commando)
   users: "/dashboard/users",
   userDetails: (id = ":id") => `/dashboard/users/${id}`,
   userManagement: "/dashboard/user-management", // ✅ Commander only
+  // viewProfile: (id) => `/dashboard/users/${id}`,
+  myProfileView: "/dashboard/profile/view",
+
 
   // ✅ KPIs
   kpis: "/dashboard/kpis",

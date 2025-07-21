@@ -43,4 +43,14 @@ export const updateUserBattalion = async (userId, battalion) => {
   return data;
 };
 
+export const getUserProfile = async (userId) => {
+  if (!userId) throw new Error("User ID is required");
+  const { data } = await api.get(`/users/${userId}`);
+  return data;
+};
 
+// ✅ Logged-in user's profile (no ID needed)
+export const getMyProfile = async () => {
+  const { data } = await api.get("/users/me");
+  return data;
+};
