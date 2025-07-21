@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require("cors");
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const sanitize = require('./middleware/sanitize');
@@ -6,6 +7,10 @@ const limiter = require('./middleware/rateLimit');
 const { errorHandler } = require('./middleware/errorMiddleware');
 const routes = require('./routes');
 const logger = require('./utils/logger');
+
+
+// Enable CORS
+app.use(cors({ origin: "*", credentials: true }));
 
 // Load environment variables
 dotenv.config();
