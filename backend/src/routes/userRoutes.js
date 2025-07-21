@@ -12,7 +12,6 @@ const {
   getUserProfile,
 } = require('../controllers/userController');
 
-router.get('/me', protect, getUserById); // Current user's data (you can modify to getUserProfile)
 router.put('/me', protect, updateProfileValidation, validate, updateProfile);
 router.get('/me', protect, getUserProfile);
 

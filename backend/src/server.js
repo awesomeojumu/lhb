@@ -9,8 +9,7 @@ const routes = require('./routes');
 const logger = require('./utils/logger');
 
 
-// Enable CORS
-app.use(cors({ origin: "*", credentials: true }));
+
 
 // Load environment variables
 dotenv.config();
@@ -20,6 +19,8 @@ connectDB();
 
 const app = express();
 
+// Enable CORS
+app.use(cors({ origin: "*", credentials: true }));
 // Body parser
 app.use(express.json());
 
