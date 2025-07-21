@@ -30,3 +30,17 @@ export const deleteUser = async (id) => {
   const { data } = await api.delete(`/users/${id}`);
   return data;
 };
+
+// Update user role (Commander/Commando)
+export const updateUserRole = async (userId, role) => {
+  const { data } = await api.put(`/users/${userId}/role`, { role });
+  return data;
+};
+
+// Update user battalion (Commander/Commando)
+export const updateUserBattalion = async (userId, battalion) => {
+  const { data } = await api.put(`/users/${userId}/battalion`, { battalion });
+  return data;
+};
+
+

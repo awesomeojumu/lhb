@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['commander', 'commando', 'specialForce', 'globalSoldier'],
-    default: 'soldier',
+    default: 'globalSoldier',
   },
 
   kpiProgress: { type: Number, default: 0 }, // % completed (0-100)

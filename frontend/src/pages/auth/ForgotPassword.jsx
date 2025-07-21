@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Box, Typography, Card, CardContent } from "@mui/material";
 import { forgotPassword } from "@services/authService";
-import { useToast } from "@context/ToastContext";
+import { useToast } from "@/components/feedback/ToastProvider"; ;
 import FormInput from "@components/forms/FormInput";
 import FormButtons from "@components/forms/FormButtons";
 

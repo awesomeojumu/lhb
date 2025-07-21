@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { getProfile, updateProfile } from "@services/userService";
-import { useToast } from "@context/ToastContext";
+import { useToast } from "@/components/feedback/ToastProvider"; 
 import Spinner from "@components/feedback/Spinner";
 import FormInput from "@components/forms/FormInput";
 import SelectInput from "@components/forms/SelectInput";

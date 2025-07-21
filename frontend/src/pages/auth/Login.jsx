@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Box, Typography, Card, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@context/AuthContext";
-import { useToast } from "@context/ToastContext";
+import { useToast } from "@/components/feedback/ToastProvider";
 import { loginFields } from "@config/forms";
 import routes from "@config/routesConfig";
 import FormInput from "@components/forms/FormInput";

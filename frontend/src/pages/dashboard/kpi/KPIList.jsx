@@ -6,7 +6,7 @@ import TableToolbar from "@components/data/TableToolbar";
 import ConfirmDialog from "@components/feedback/ConfirmDialog";
 import { getAllKPIs, deleteKPI } from "@services/kpiService";
 import Spinner from "@components/feedback/Spinner";
-import { useToast } from "@context/ToastContext";
+import { useToast } from "@/components/feedback/ToastProvider"; ;
 import routes from "@config/routesConfig";
 
 const KPIList = () => {

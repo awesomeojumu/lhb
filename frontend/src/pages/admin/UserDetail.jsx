@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getUserById } from "@services/userService";
-import { useToast } from "@context/ToastContext";
+import { useToast } from "@/components/feedback/ToastProvider"; ;
 import { Card, CardContent, Typography } from "@mui/material";
 
 export default function UserDetail() {

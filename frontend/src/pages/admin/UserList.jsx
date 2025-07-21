@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { listUsers, deleteUser } from "@services/userService";
-import { useToast } from "@context/ToastContext";
+import { useToast } from "@/components/feedback/ToastProvider"; ;
 import { useAuth } from "@context/AuthContext";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";

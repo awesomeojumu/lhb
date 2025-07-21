@@ -1,10 +1,10 @@
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { BrowserRouter } from "react-router-dom";
 import { getTheme } from "@theme/muiTheme";
-import { AuthProvider } from "@context/AuthContext";
-import { ToastProvider } from "@context/ToastContext";
-import { SettingsProvider, useSettings } from "@context/SettingsContext";
-import AppRoutes from "@routes/AppRoutes";
+import { AuthProvider } from "@/context/AuthContext"; // ✅ Ensure this path is correct
+import { ToastProvider } from "@/components/feedback/ToastProvider"; // ✅ Corrected import path
+import { SettingsProvider, useSettings } from "@/context/SettingsContext";
+import AppRoutes from "@/routes/AppRoutes";
 
 function ThemedApp() {
   const { mode } = useSettings();
@@ -15,7 +15,7 @@ function ThemedApp() {
       <BrowserRouter>
         <AuthProvider>
           <ToastProvider>
-            <AppRoutes /> {/* ✅ Only ONE BrowserRouter now */}
+            <AppRoutes />
           </ToastProvider>
         </AuthProvider>
       </BrowserRouter>

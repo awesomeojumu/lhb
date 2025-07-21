@@ -8,7 +8,7 @@ import {
   Stack
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@context/ToastContext";
+import { useToast } from "@/components/feedback/ToastProvider"; ;
 import { register as registerService } from "@services/authService";
 import { registerFields } from "@config/forms";
 import routes from "@config/routesConfig";

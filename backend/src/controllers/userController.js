@@ -78,3 +78,55 @@ exports.getUserProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateUserRole = async (req, res) => {
+  try {
+    if (!req.user || !["commander", "commando"].includes(req.user.role)) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const { role } = req.body;
+    if (!role) return res.status(400).json({ message: "Role is required" });
+
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.role === "commander") {
+      return res.status(403).json({ message: "Cannot change Commander’s role" });
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.json({ message: "Role updated successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ Add this to your userController.js
+exports.updateUserBattalion = async (req, res) => {
+  try {
+    if (!req.user || !["commander", "commando"].includes(req.user.role)) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const { battalion } = req.body;
+    if (!battalion) {
+      return res.status(400).json({ message: "Battalion is required" });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.battalion = battalion;
+    await user.save();
+
+    res.json({ message: "Battalion updated successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+

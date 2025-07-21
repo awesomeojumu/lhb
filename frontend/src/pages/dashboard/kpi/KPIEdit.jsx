@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { getKPIDetails, updateKPI } from "@services/kpiService";
-import { useToast } from "@context/ToastContext";
+import { useToast } from "@/components/feedback/ToastProvider";
 import Spinner from "@components/feedback/Spinner";
 import FormInput from "@components/forms/FormInput";
 import DatePickerInput from "@components/forms/DatePickerInput";

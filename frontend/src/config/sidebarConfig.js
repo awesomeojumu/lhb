@@ -16,7 +16,7 @@ const sidebarConfig = {
     { label: "Ranks", icon: AssignmentIndIcon, path: routes.ranks },
     { label: "Profile", icon: SettingsIcon, path: routes.profile },
   ],
-  specialForces: [
+  specialForce: [
     { label: "Dashboard", icon: DashboardIcon, path: routes.dashboard },
     { label: "My KPIs", icon: TaskIcon, path: routes.myKpis },
     { label: "Battalion", icon: PeopleIcon, path: routes.battalion },

@@ -9,7 +9,7 @@ import {
   Stack,
   Button,
 } from "@mui/material";
-import { useToast } from "@context/ToastContext";
+import { useToast } from "@/components/feedback/ToastProvider"; ;
 
 const Settings = () => {
   const { showToast } = useToast();

@@ -66,28 +66,28 @@ const DashboardHome = () => {
             Role Counts
           </Typography>
           <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <StatCard
                 title="Global Soldiers"
                 value={roleCounts.globalsoldier}
                 onClick={() => handleCardClick("role", "globalsoldier")}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <StatCard
                 title="Special Forces"
                 value={roleCounts.specialforce}
                 onClick={() => handleCardClick("role", "specialforce")}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <StatCard
                 title="Commandos"
                 value={roleCounts.commando}
                 onClick={() => handleCardClick("role", "commando")}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <StatCard
                 title="Commanders"
                 value={roleCounts.commander}
@@ -102,7 +102,7 @@ const DashboardHome = () => {
           </Typography>
           <Grid container spacing={3} sx={{ mb: 4 }}>
             {Object.entries(battalionCounts).map(([name, count]) => (
-              <Grid item xs={12} sm={6} md={3} key={name}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={name}>
                 <StatCard
                   title={name}
                   value={count}
@@ -117,21 +117,21 @@ const DashboardHome = () => {
             KPI Status
           </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <StatCard
                 title="Completed"
                 value={kpiStatus.completed}
                 onClick={() => handleCardClick("kpiStatus", "completed")}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <StatCard
                 title="In Progress"
                 value={kpiStatus.inProgress}
                 onClick={() => handleCardClick("kpiStatus", "inProgress")}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <StatCard
                 title="Not Started"
                 value={kpiStatus.notStarted}
