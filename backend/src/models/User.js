@@ -48,12 +48,20 @@ const userSchema = new mongoose.Schema({
     default: 'soldier',
   },
 
+  kpiProgress: { type: Number, default: 0 }, // % completed (0-100)
+  completedKpis: { type: Number, default: 0 },
+  inProgressKpis: { type: Number, default: 0 },
+  notStartedKpis: { type: Number, default: 0 },
+  lastActive: { type: Date, default: Date.now },
+
   password: { type: String, required: true, minlength: 6, select: false }, // select:false hides it in queries
   createdAt: { type: Date, default: Date.now },
 
   // For password reset
   resetPasswordToken: String,
-  resetPasswordExpire: Date
+  resetPasswordExpire: Date,
+
+
 });
 
 // ===========================
