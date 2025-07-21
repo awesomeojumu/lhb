@@ -33,6 +33,10 @@ const routes = {
 
   // ✅ Analytics
   analytics: "/dashboard/analytics", // ✅ Commando & Commander
+
+  // ✅ Notifications
+    kpiDetails: (id = ":kpiId") => `/dashboard/kpis/${id}`,
 };
+
 
 export default routes;

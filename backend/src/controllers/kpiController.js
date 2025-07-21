@@ -52,18 +52,19 @@ exports.assignKPI = async (req, res) => {
     }));
     await KPIStatus.insertMany(statusEntries);
 
-    const emailPromises = targetUsers.map((user) => {
-      const emailContent = `
-        <p>Hello ${user.firstName},</p>
-        <p>You have been assigned a new KPI: <strong>${title}</strong></p>
-        <p>Target: ${target}</p>
-        <p>Deadline: ${new Date(deadline).toDateString()}</p>
-      `;
-      return sendEmail(user.email, `New KPI Assigned: ${title}`, emailContent).catch((err) =>
-        console.error(`Email failed for ${user.email}:`, err.message)
-      );
-    });
-    Promise.all(emailPromises);
+    // Send Emails (Async)
+    Promise.all(
+      targetUsers.map((user) =>
+        sendEmail(
+          user.email,
+          `New KPI Assigned: ${title}`,
+          `<p>Hello ${user.firstName},</p>
+          <p>You have been assigned a new KPI: <strong>${title}</strong></p>
+          <p>Target: ${target}</p>
+          <p>Deadline: ${new Date(deadline).toDateString()}</p>`
+        ).catch((err) => console.error(`Email failed for ${user.email}:`, err.message))
+      )
+    );
 
     res.status(201).json({
       message: `KPI '${title}' assigned to ${targetUsers.length} users.`,
@@ -77,7 +78,7 @@ exports.assignKPI = async (req, res) => {
 };
 
 // =======================
-// Get All KPIs
+// Get All KPIs (Commander/Commando)
 // =======================
 exports.getAllKPIs = async (req, res) => {
   try {
@@ -89,12 +90,11 @@ exports.getAllKPIs = async (req, res) => {
 };
 
 // =======================
-// Get Single KPI by ID
+// Get Single KPI by ID (Details)
 // =======================
 exports.getKPIDetails = async (req, res) => {
   try {
-    const kpi = await KPI.findById(req.params.kpiId)
-      .populate('createdBy', 'firstName lastName role');
+    const kpi = await KPI.findById(req.params.kpiId).populate('createdBy', 'firstName lastName role');
     if (!kpi) return res.status(404).json({ message: 'KPI not found' });
     res.json(kpi);
   } catch (error) {
@@ -150,22 +150,21 @@ exports.deleteKPI = async (req, res) => {
 };
 
 // =======================
-// Get User KPIs
+// Get KPIs for a Specific User
 // =======================
 exports.getUserKPIs = async (req, res) => {
   try {
     const kpis = await KPIStatus.find({ user: req.params.userId })
       .populate('kpi', 'title description target deadline')
       .populate('user', 'firstName lastName email');
-    if (!kpis || kpis.length === 0) return res.status(404).json({ message: 'No KPIs found' });
-    res.json(kpis);
+    res.json(kpis || []);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 // =======================
-// Update KPI Status
+// Update KPI Status (Self)
 // =======================
 exports.updateKPIStatus = async (req, res) => {
   try {
@@ -173,7 +172,9 @@ exports.updateKPIStatus = async (req, res) => {
     const { progress, status } = req.body;
 
     const kpiStatus = await KPIStatus.findByIdAndUpdate(
-      kpiStatusId, { progress, status }, { new: true }
+      kpiStatusId,
+      { progress, status },
+      { new: true }
     );
     if (!kpiStatus) return res.status(404).json({ message: 'KPI Status not found' });
 
@@ -191,24 +192,20 @@ exports.getMyKPIs = async (req, res) => {
     const kpis = await KPIStatus.find({ user: req.user._id })
       .populate('kpi', 'title description target deadline')
       .populate('user', 'firstName lastName email');
-    if (!kpis || kpis.length === 0) return res.status(404).json({ message: 'No KPIs found' });
-    res.json(kpis);
+    res.json(kpis || []);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 // =======================
-// Get KPI Summary
+// Get KPI Summary (My Overview)
 // =======================
 exports.getKPISummary = async (req, res) => {
   try {
     const summaries = await KPIStatus.find({ user: req.user._id })
       .populate('kpi', 'title target deadline')
       .select('progress status');
-    if (!summaries || summaries.length === 0) {
-      return res.status(404).json({ message: 'No KPI summaries found' });
-    }
 
     const formatted = summaries.map((item) => ({
       title: item.kpi.title,

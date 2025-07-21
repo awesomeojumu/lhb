@@ -33,8 +33,8 @@ router.get('/', protect, authorizeRoles('commander', 'commando'), getAllKPIs);
 // ✅ KPIs for specific user
 router.get('/user/:userId', protect, getUserKPIs);
 
-// ✅ Single KPI details (must come last to avoid overriding /summary)
-router.get('/:kpiId', protect, getKPIDetails);
+// ✅ Single KPI details
+router.get('/details/:kpiId', protect, getKPIDetails);
 
 // ✅ Update KPI progress/status (Self)
 router.put('/status/:kpiStatusId', protect, updateKPIStatusValidation, validate, updateKPIStatus);

@@ -55,7 +55,7 @@ const MyKpis = () => {
   ];
 
   return (
-    <Box>
+    <Box sx={{ maxWidth: 900, mx: "auto", my: 4 }}>
       <TableToolbar title="My KPIs" />
       <DataTable
         columns={columns}

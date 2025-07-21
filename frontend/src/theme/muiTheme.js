@@ -1,14 +1,14 @@
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
-// Define base palettes for light & dark modes
+// ✅ Define base palettes for light & dark modes
 const lightPalette = {
   mode: "light",
   primary: {
-    main: "#c2741bff", // Blue
+    main: "#c2741bff",
     contrastText: "#fff",
   },
   secondary: {
-    main: "#30662bff", // Purple
+    main: "#30662bff",
     contrastText: "#fff",
   },
   background: {
@@ -24,11 +24,11 @@ const lightPalette = {
 const darkPalette = {
   mode: "dark",
   primary: {
-    main: "#000000ff", // Light blue for dark mode
+    main: "#000000ff",
     contrastText: "#000",
   },
   secondary: {
-    main: "#758108ff", // Light purple
+    main: "#758108ff",
     contrastText: "#000",
   },
   background: {
@@ -41,7 +41,7 @@ const darkPalette = {
   },
 };
 
-// Global typography settings
+// ✅ Global typography settings
 const typography = {
   fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
   h1: { fontSize: "2.2rem", fontWeight: 600 },
@@ -52,9 +52,10 @@ const typography = {
   button: { textTransform: "none", fontWeight: 600 },
 };
 
-// Global shape & shadows
+// ✅ Global shape & shadows
 const shape = { borderRadius: 8 };
 
+// ✅ Component-level overrides & defaults (improved spacing)
 const components = {
   MuiButton: {
     styleOverrides: {
@@ -69,6 +70,28 @@ const components = {
       root: {
         borderRadius: 12,
         boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+      },
+    },
+  },
+
+  // ✅ Consistent spacing for all form fields
+  MuiTextField: {
+    defaultProps: {
+      fullWidth: true,
+      margin: "normal", // uniform vertical spacing
+      variant: "outlined",
+    },
+  },
+  MuiFormControl: {
+    defaultProps: {
+      fullWidth: true,
+      margin: "normal", // affects Select, Checkbox groups, etc.
+    },
+  },
+  MuiFormHelperText: {
+    styleOverrides: {
+      root: {
+        marginLeft: 0, // aligns helper text with TextField edges
       },
     },
   },

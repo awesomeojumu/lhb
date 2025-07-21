@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Typography, Box, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import StatCard from "@components/data/statCard";
+import StatCard from "@components/data/StatCard";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/components/feedback/ToastProvider";
+import { getMyKPIs, getAllKPIs } from "@/services/kpiService";
+import { listUsers } from "@/services/userService";
 import routes from "@/config/routesConfig";
 
 const DashboardHome = () => {
   const { user } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const role = user?.role?.toLowerCase() || "globalsoldier";
 
-  // ✅ Local state (mock data for now)
   const [kpiProgress, setKpiProgress] = useState(0);
   const [roleCounts, setRoleCounts] = useState({});
   const [battalionCounts, setBattalionCounts] = useState({});
@@ -21,24 +24,59 @@ const DashboardHome = () => {
   });
 
   useEffect(() => {
-    // ✅ Replace with API calls later
-    setKpiProgress(65);
-    setRoleCounts({
-      globalsoldier: 320,
-      specialforce: 45,
-      commando: 12,
-      commander: 3,
-    });
-    setBattalionCounts({ Alpha: 120, Bravo: 90, Charlie: 100, Delta: 67 });
-    setKpiStatus({ completed: 560, inProgress: 78, notStarted: 42 });
-  }, []);
+    const fetchDashboardData = async () => {
+      try {
+        const [myKpis, allKpis, users] = await Promise.all([
+          getMyKPIs(),
+          getAllKPIs(),
+          listUsers(),
+        ]);
+
+        // ✅ My KPI Progress (%)
+        const completed = myKpis.filter((k) => k.status === "Completed").length;
+        const progress = Math.round((completed / (myKpis.length || 1)) * 100);
+        setKpiProgress(progress);
+
+        // ✅ KPI Status Counts
+        setKpiStatus({
+          completed: allKpis.filter((k) => k.status === "Completed").length,
+          inProgress: allKpis.filter((k) => k.status === "In Progress").length,
+          notStarted: allKpis.filter((k) => !k.status || k.status === "Not Started").length,
+        });
+
+        // ✅ Role Counts
+        const rolesSummary = users.reduce(
+          (acc, u) => {
+            acc[u.role] = (acc[u.role] || 0) + 1;
+            return acc;
+          },
+          { globalsoldier: 0, specialforce: 0, commando: 0, commander: 0 }
+        );
+        setRoleCounts(rolesSummary);
+
+        // ✅ Battalion Counts
+        const battalionsSummary = users.reduce(
+          (acc, u) => {
+            acc[u.battalion] = (acc[u.battalion] || 0) + 1;
+            return acc;
+          },
+          { Alpha: 0, Bravo: 0, Charlie: 0, Delta: 0 }
+        );
+        setBattalionCounts(battalionsSummary);
+      } catch (error) {
+        showToast("Failed to load dashboard data", "error");
+      }
+    };
+
+    fetchDashboardData();
+  }, [showToast]);
 
   const handleCardClick = (filterType, value) => {
     navigate(`${routes.analytics}?filter=${filterType}&value=${value}`);
   };
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ maxWidth: 1200, mx: "auto", my: 4 }}>
       {/* ✅ Personal KPI Progress (Everyone) */}
       <Box sx={{ textAlign: "center", mb: 4 }}>
         <Typography variant="h5" gutterBottom>

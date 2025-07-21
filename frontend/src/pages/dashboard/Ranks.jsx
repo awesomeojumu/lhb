@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, Chip, Paper } from "@mui/material";
 import Spinner from "@/components/feedback/Spinner";
 import StatCard from "@/components/data/StatCard";
 import DataTable from "@/components/data/DataTable";
 import TableToolbar from "@/components/data/TableToolbar";
 import { useToast } from "@/components/feedback/ToastProvider";
 import { listUsers } from "@/services/userService";
+import { roleOptions, battalions } from "@/config/roles";
 
 const Ranks = () => {
   const [users, setUsers] = useState([]);
@@ -27,6 +28,26 @@ const Ranks = () => {
 
   if (loading) return <Spinner />;
 
+  // ✅ Helpers
+  const getRoleLabel = (value) =>
+    roleOptions.find((opt) => opt.value === value)?.label || value;
+
+  const getBattalionLabel = (value) =>
+    battalions.find((opt) => opt.value === value)?.label || value;
+
+  const getRoleColor = (value) => {
+    switch (value) {
+      case "commander":
+        return "error";
+      case "commando":
+        return "warning";
+      case "specialForce":
+        return "info";
+      default:
+        return "success";
+    }
+  };
+
   // ✅ Group users by role
   const roleCounts = users.reduce(
     (acc, user) => {
@@ -40,40 +61,56 @@ const Ranks = () => {
     { field: "firstName", headerName: "First Name" },
     { field: "lastName", headerName: "Last Name" },
     { field: "email", headerName: "Email" },
-    { field: "role", headerName: "Role" },
-    { field: "battalion", headerName: "Battalion" },
+    { field: "phone", headerName: "Phone" },
+    {
+      field: "role",
+      headerName: "Role",
+      renderCell: (value) => (
+        <Chip
+          label={getRoleLabel(value)}
+          color={getRoleColor(value)}
+          size="small"
+          sx={{ fontWeight: "bold" }}
+        />
+      ),
+    },
+    {
+      field: "battalion",
+      headerName: "Battalion",
+      renderCell: (value) => getBattalionLabel(value),
+    },
   ];
 
   return (
-    <Box>
-      <Typography variant="h5" fontWeight="bold" mb={2}>
+    <Box sx={{ p: 1}}>
+      <Typography variant="h4" fontWeight="bold" mb={3}>
         Ranks Overview
       </Typography>
 
-      {/* ✅ Rank Summary */}
-      <Grid container spacing={2} mb={4}>
-        <Grid item xs={12} sm={6} md={3}>
+      {/* ✅ Stat Cards */}
+      <Grid container spacing={3} mb={4}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title="Commanders"
             value={roleCounts.commander}
             subtext="Total Commanders"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title="Commandos"
             value={roleCounts.commando}
             subtext="Total Commandos"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title="Special Forces"
             value={roleCounts.specialForce}
             subtext="Total Special Forces"
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title="Global Soldiers"
             value={roleCounts.globalSoldier}
@@ -82,9 +119,17 @@ const Ranks = () => {
         </Grid>
       </Grid>
 
-      {/* ✅ Full Users Table */}
-      <TableToolbar title="All Members by Ranks" />
-      <DataTable columns={columns} rows={users} />
+      {/* ✅ Users Table */}
+      <Paper elevation={3} sx={{ p: 2 }}>
+        <TableToolbar title={`All Members by Ranks (${users.length})`} />
+        <DataTable
+          columns={columns}
+          rows={users}
+          pagination
+          pageSize={10}
+          search
+        />
+      </Paper>
     </Box>
   );
 };
