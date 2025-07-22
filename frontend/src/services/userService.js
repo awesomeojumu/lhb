@@ -54,3 +54,9 @@ export const getMyProfile = async () => {
   const { data } = await api.get("/users/me");
   return data;
 };
+
+// Update user profile (for current user)
+export const updateUserProfile = async (userId, updatedData) => {
+  const response = await api.put(`/users/${userId}`, updatedData);
+  return response.data;
+};

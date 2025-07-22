@@ -1,46 +1,35 @@
-const routes = {
-  // ✅ Auth
-  login: "/login",
-  register: "/register",
-  forgotPassword: "/forgot-password",
-  resetPassword: (token = ":token") => `/reset-password/${token}`,
+export default {
+    // ✅ Dashboard Root
+    dashboard: "/dashboard",
 
-  // ✅ Dashboard Home
-  dashboard: "/dashboard",
+    // ✅ Basic Dashboard Pages (relative to /dashboard)
+    myKpis: "my-kpis",
+    battalion: "battalion",
+    ranks: "ranks",
+    profile: "profile",
+    viewProfile: (id = ":id") => `profile/view/${id}`,
+    settings: "settings",
 
-  // ✅ User Profile & Settings
-  profile: "/dashboard/profile",
-  viewProfile: "/dashboard/viewProfile",
-  settings: "/dashboard/settings",
+    // ✅ KPI Pages (relative to /dashboard)
+    kpis: "kpis",
+    kpiCreate: "kpis/create",
+    kpiDetails: (kpiId = ":kpiId") => `kpis/${kpiId}`, // ✅ matches backend
+    kpiEdit: (kpiId = ":kpiId") => `kpis/${kpiId}/edit`, // ✅ matches backend
 
-  // ✅ Users (Commander & Commando)
-  users: "/dashboard/users",
-  userDetails: (id = ":id") => `/dashboard/users/${id}`,
-  userManagement: "/dashboard/user-management", // ✅ Commander only
-  // viewProfile: (id) => `/dashboard/users/${id}`,
-  myProfileView: "/dashboard/profile/view",
+    // ✅ Management Pages
+    dashboardManagement: "management/dashboard",
+    kpiManagement: "management/kpi-management",
+    battalionManagement: "management/battalion-management",
+    roleManagement: "management/role-management",
 
+    // ✅ User Management
+    users: "users",
+    userDetails: (id = ":id") => `users/${id}`,
+    userManagement: "admin/user-management",
 
-  // ✅ KPIs
-  kpis: "/dashboard/kpis",
-  kpiCreate: "/dashboard/kpis/create",
-  kpiDetails: (id = ":id") => `/dashboard/kpis/${id}`,
-  kpiEdit: (id = ":id") => `/dashboard/kpis/${id}/edit`,
-  myKpis: "/dashboard/my-kpis", // ✅ All roles
-  kpiManagement: "/dashboard/kpi-management", // ✅ Commando & Commander
-
-  // ✅ Battalion & Ranks
-  battalion: "/dashboard/battalion", // ✅ All roles
-  battalionManagement: "/dashboard/battalion-management", // ✅ Commando & Commander
-  ranks: "/dashboard/ranks", // ✅ All roles
-  roleManagement: "/dashboard/role-management", // ✅ Commando & Commander
-
-  // ✅ Analytics
-  analytics: "/dashboard/analytics", // ✅ Commando & Commander
-
-  // ✅ Notifications
-    kpiDetails: (id = ":kpiId") => `/dashboard/kpis/${id}`,
+    // ✅ Auth Pages
+    login: "/login",
+    register: "/register",
+    forgotPassword: "/forgot-password",
+    resetPassword: (token = ":token") => `/reset-password/${token}`,
 };
-
-
-export default routes;

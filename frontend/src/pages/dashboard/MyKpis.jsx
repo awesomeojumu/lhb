@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, LinearProgress, Typography, Chip } from "@mui/material";
+import { Box, LinearProgress, Typography, Chip, Paper } from "@mui/material";
 import Spinner from "@/components/feedback/Spinner";
 import TableToolbar from "@/components/data/TableToolbar";
 import DataTable from "@/components/data/DataTable";
@@ -15,41 +15,56 @@ const MyKpis = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    (async () => {
+    const fetchMyKPIs = async () => {
       try {
         const data = await getMyKPIs();
-        setKpis(data);
+        setKpis(data || []);
       } catch (error) {
         showToast(error.message || "Failed to load KPIs", "error");
       } finally {
         setLoading(false);
       }
-    })();
+    };
+
+    fetchMyKPIs();
   }, [showToast]);
 
   if (loading) return <Spinner />;
 
   if (!kpis.length) {
     return (
-      <Box sx={{ textAlign: "center", mt: 5 }}>
+      <Box sx={{ textAlign: "center", mt: 6 }}>
         <Typography variant="h6" color="text.secondary">
           No KPIs assigned yet.
+        </Typography>
+        <Typography variant="body2" color="text.disabled" sx={{ mt: 1 }}>
+          Once KPIs are assigned, they will appear here with progress tracking.
         </Typography>
       </Box>
     );
   }
 
-  // ✅ Helper: Color-coded status chip
+  // ✅ Status Chip Helper
   const renderStatusChip = (status) => {
-    let color = "default";
-    if (status === "Completed") color = "success";
-    else if (status === "In Progress") color = "warning";
-    else color = "default";
+    const normalizedStatus = status || "Not Started";
+    const color =
+      normalizedStatus === "Completed"
+        ? "success"
+        : normalizedStatus === "In Progress"
+        ? "warning"
+        : "default";
 
-    return <Chip label={status || "Not Started"} color={color} size="small" />;
+    return (
+      <Chip
+        label={normalizedStatus}
+        color={color}
+        size="small"
+        sx={{ fontWeight: "bold" }}
+      />
+    );
   };
 
-  // ✅ Helper: Progress bar colors
+  // ✅ Progress Bar Color Helper
   const getProgressColor = (value) => {
     if (value >= 80) return "success";
     if (value >= 40) return "warning";
@@ -61,13 +76,13 @@ const MyKpis = () => {
     {
       field: "status",
       headerName: "Status",
-      renderCell: (value) => renderStatusChip(value),
+      renderCell: renderStatusChip,
     },
     {
       field: "progress",
       headerName: "Progress",
       renderCell: (value) => (
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%", minWidth: 100 }}>
           <LinearProgress
             variant="determinate"
             value={value || 0}
@@ -88,12 +103,15 @@ const MyKpis = () => {
 
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", my: 4 }}>
-      <TableToolbar title="My KPIs" />
-      <DataTable
-        columns={columns}
-        rows={kpis}
-        onRowClick={(row) => navigate(routes.kpiDetails(row._id))}
-      />
+      <Paper sx={{ p: 2 }}>
+        <TableToolbar title="My KPIs" />
+        <DataTable
+          columns={columns}
+          rows={kpis}
+          showIndex // ✅ (optional, works with improved DataTable)
+          onRowClick={(row) => navigate(routes.kpiDetails(row._id))}
+        />
+      </Paper>
     </Box>
   );
 };

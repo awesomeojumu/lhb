@@ -8,11 +8,6 @@ const TableToolbar = ({ title, onSearch, onAdd }) => {
         {title}
       </Typography>
       <Stack direction="row" spacing={2}>
-        <TextField
-          size="small"
-          placeholder="Search..."
-          onChange={(e) => onSearch(e.target.value)}
-        />
         {onAdd && (
           <Button variant="contained" color="primary" onClick={onAdd}>
             Add New

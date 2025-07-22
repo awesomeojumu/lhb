@@ -25,17 +25,23 @@ import { roleOptions } from "@/config/roles";
 const KPICreate = () => {
   const { control, handleSubmit, watch, setValue } = useForm({
     defaultValues: {
+      title: "",
+      description: "",
+      target: "",
+      deadline: "",
       assignmentType: "specific",
       userIds: [],
       role: "",
     },
   });
+
   const { showToast } = useToast();
   const navigate = useNavigate();
   const assignmentType = watch("assignmentType");
 
   const [users, setUsers] = useState([]);
 
+  // ✅ Fetch Users for "Specific Users" assignment
   useEffect(() => {
     if (assignmentType === "specific") {
       (async () => {
@@ -49,15 +55,27 @@ const KPICreate = () => {
     }
   }, [assignmentType, showToast]);
 
+  // ✅ Handle Submit
   const onSubmit = async (data) => {
     try {
-      // ✅ Convert userIds if needed
       const payload = {
-        ...data,
-        userIds: Array.isArray(data.userIds)
-          ? data.userIds
-          : data.userIds.split(",").map((id) => id.trim()),
+        title: data.title,
+        description: data.description,
+        target: data.target,
+        deadline: data.deadline,
+        assignmentType: data.assignmentType,
       };
+
+      if (data.assignmentType === "specific") {
+        payload.userIds = Array.isArray(data.userIds)
+          ? data.userIds
+          : [];
+      }
+
+      if (data.assignmentType === "role") {
+        payload.role = data.role;
+      }
+
       await createKPI(payload);
       showToast("KPI created successfully!", "success");
       navigate(routes.kpis);
@@ -73,9 +91,11 @@ const KPICreate = () => {
           <Typography variant="h5" mb={3} fontWeight="bold">
             Create KPI
           </Typography>
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12 }}>
+              {/* ✅ Title */}
+              <Grid item xs={12}>
                 <FormInput
                   name="title"
                   label="Title"
@@ -83,7 +103,9 @@ const KPICreate = () => {
                   rules={{ required: "Title is required" }}
                 />
               </Grid>
-              <Grid size={{ xs: 12 }}>
+
+              {/* ✅ Description */}
+              <Grid item xs={12}>
                 <FormInput
                   name="description"
                   label="Description"
@@ -92,7 +114,9 @@ const KPICreate = () => {
                   rows={3}
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+
+              {/* ✅ Target */}
+              <Grid item xs={12} sm={6}>
                 <FormInput
                   name="target"
                   label="Target"
@@ -100,7 +124,9 @@ const KPICreate = () => {
                   rules={{ required: "Target is required" }}
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+
+              {/* ✅ Deadline */}
+              <Grid item xs={12} sm={6}>
                 <DatePickerInput
                   name="deadline"
                   label="Deadline"
@@ -110,7 +136,7 @@ const KPICreate = () => {
               </Grid>
 
               {/* ✅ Assignment Type */}
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <FormControl fullWidth>
                   <InputLabel>Assignment Type</InputLabel>
                   <Select
@@ -124,9 +150,9 @@ const KPICreate = () => {
                 </FormControl>
               </Grid>
 
-              {/* ✅ Role Assignment */}
+              {/* ✅ Role (Only if assignmentType === role) */}
               {assignmentType === "role" && (
-                <Grid size={{ xs: 12 }}>
+                <Grid item xs={12}>
                   <FormControl fullWidth>
                     <InputLabel>Role</InputLabel>
                     <Select
@@ -143,22 +169,23 @@ const KPICreate = () => {
                 </Grid>
               )}
 
-              {/* ✅ Specific Users */}
+              {/* ✅ Specific Users (Only if assignmentType === specific) */}
               {assignmentType === "specific" && (
-                <Grid size={{ xs: 12 }}>
+                <Grid item xs={12}>
                   <MultiSelectInput
                     name="userIds"
                     label="Assign to Users"
                     control={control}
                     options={users.map((u) => ({
                       value: u._id,
-                      label: `${u.firstName} ${u.lastName} (${u.email})`,
+                      label: `${u.firstName} ${u.lastName} (${u.email})`, // ✅ Shows proper names
                     }))}
                   />
                 </Grid>
               )}
             </Grid>
 
+            {/* ✅ Buttons */}
             <FormButtons
               sx={{ mt: 3 }}
               isSubmitting={false}
