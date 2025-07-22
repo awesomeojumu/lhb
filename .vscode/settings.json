@@ -1,0 +1,34 @@
+{
+  // ✅ Auto-format on save (Prettier as default)
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // ✅ Auto-fix ESLint issues on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.fixAll.eslint": true
+  },
+
+  // ✅ Enable ESLint validation for JS & React files
+  "eslint.validate": ["javascript", "javascriptreact"],
+
+  // ✅ Force LF (Unix-style) line endings for cross-OS consistency
+  "files.eol": "\n",
+
+  // ✅ Force 2-space indentation (matches Prettier)
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+
+  // ✅ Optional: Auto-save on focus change (personal/team preference)
+  "files.autoSave": "onFocusChange",
+
+  // ✅ Show ESLint status in the bottom status bar
+  "eslint.alwaysShowStatus": true,
+
+  // ✅ Trim trailing whitespace on save (good for clean commits)
+  "files.trimTrailingWhitespace": true,
+
+  // ✅ Ensure final newline at end of files (Prettier standard)
+  "files.insertFinalNewline": true
+}
